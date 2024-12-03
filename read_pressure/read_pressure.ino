@@ -134,6 +134,68 @@ float PressureFromVoltage(float voltage){
 }
 
 
+float volu_flow_rate_from_delta_p(float pressure1, float pressure2){
+  // calculate the volumetric flow rate using the Hagen–Poiseuille equation
+
+  float R = 1;    // pipe radius, meters
+  float deltaP = abs(pressure1 - pressure2);  // absolute difference between pressures
+  float L = 1;    // pipe length, meters
+
+
+  // viscosity https://www.engineersedge.com/physics/viscosity_of_air_dynamic_and_kinematic_14483.htm 
+  float mu = 1.825*(10**5);    // dynamic viscosity of air at 20 deg C, kg/m-s
+
+  float dotQ_m3_sec = pi()*(R**4)*deltaP / (8*mu*L);
+
+  return dotQ_m3_sec
+}
+
+
+
+// Function to perform trapezoidal integration of sensor readings from 0 to a specified time
+// Parameters:
+//   sensorRead: Function pointer to read sensor value
+//   interval: Desired sampling interval in milliseconds
+//   duration: Total integration time in milliseconds
+// Returns:
+//   The integrated value over the specified duration
+float trapezoidalIntegrate(unsigned long interval, unsigned long duration) {
+  // Variables for integration
+  float lastValue = 0;     // Last sensor reading
+  float integral = 0;      // Accumulated integral
+  unsigned long startTime = millis();  // Start time of integration
+  unsigned long lastSampleTime = startTime;  // Time of last sample
+  
+  // Continue integrating until the specified duration has elapsed
+  while (millis() - startTime < duration) {
+    unsigned long currentTime = millis();
+    float deltaTime = (currentTime - lastSampleTime) / 1000.0;  // Time since last sample in seconds
+    
+    // Check if it's time for a new reading
+    if (deltaTime >= interval / 1000.0) {
+      // Read current sensor value 
+      float pressure1 = read_pressure("sensor1");   // placeholder function
+      float pressure2 = read_pressure("sensor2");
+
+
+      // get the volumetric flow rate
+      currentValue = volu_flow_rate_from_delta_p(pressure1, pressure2);
+      
+      // Calculate area (volume) using trapezoidal rule
+      integral += (currentValue + lastValue) * deltaTime * 0.5;
+      
+      // Update for next iteration
+      lastValue = currentValue;
+      lastSampleTime = currentTime;
+    }
+    
+    // Small delay to prevent tight looping
+    delay(1);
+  }
+  
+  // Return the final integrated value
+  return integral;
+}
 
 
 
