@@ -17,7 +17,7 @@ const unsigned long debounceTime = 1; // 1ms debounce time for encoder
 // Menu variables
 int menuItem = 0;  // Current selected menu item
 const int numItems = 3;  // Total number of menu items
-String menuItems[numItems] = {"Function 1", "Function 2", "Function 3"};  // Array of menu items
+String menuItems[numItems] = {"1. Calibrate", "2. Run Test", "3. Sys Info"};  // Array of menu items
 
 void setup() {
   // Initialize the LCD
@@ -44,9 +44,12 @@ void loop() {
   
   // Check if encoder value has changed
   if (encoderValue != lastEncoderValue) {
-    // Calculate the change and update menu item
+    // Calculate the change
     int change = encoderValue - lastEncoderValue;
-    menuItem = (menuItem + change + numItems) % numItems;  // Wrap around menu items
+    
+    // Update menuItem, but constrain it to valid range
+    menuItem = constrain(menuItem + change, 0, numItems - 1);
+    
     lastEncoderValue = encoderValue;  // Update last encoder value
     updateDisplay();  // Update the LCD display
   }
@@ -77,9 +80,15 @@ void handleEncoder() {
 void updateDisplay() {
   lcd.clear();  // Clear the LCD
   lcd.setCursor(0, 0);  // Set cursor to first row
-  lcd.print("> " + menuItems[menuItem]);  // Display current menu item with selector
-  lcd.setCursor(0, 1);  // Set cursor to second row
-  lcd.print(menuItems[(menuItem + 1) % numItems]);  // Display next menu item
+  lcd.print(menuItems[menuItem]);  // Display current menu item with selector
+  lcd.setCursor(13,0);
+  lcd.print("<--");
+  
+  // Display next menu item if it exists
+  if (menuItem < numItems - 1) {
+    lcd.setCursor(0, 1);  // Set cursor to second row
+    lcd.print(menuItems[menuItem + 1]);
+  }
 }
 
 // Function to handle menu item selection
@@ -93,13 +102,13 @@ void selectFunction() {
   // Execute the selected function based on menu item
   switch (menuItem) {
     case 0:
-      function1();
+      Calibrate();
       break;
     case 1:
-      function2();
+      RunTest();
       break;
     case 2:
-      function3();
+      SysInfo();
       break;
   }
   
@@ -107,15 +116,3 @@ void selectFunction() {
   updateDisplay();  // Return to menu display
 }
 
-// Example functions to be executed when selected
-void function1() {
-  Serial.println("Function 1 executed");
-}
-
-void function2() {
-  Serial.println("Function 2 executed");
-}
-
-void function3() {
-  Serial.println("Function 3 executed");
-}
