@@ -17,7 +17,7 @@ const unsigned long debounceTime = 1; // 1ms debounce time for encoder
 // Menu variables
 int menuItem = 0;  // Current selected menu item
 const int numItems = 3;  // Total number of menu items
-String menuItems[numItems] = {"1. Calibrate", "2. Run Test", "3. Sys Info"};  // Array of menu items
+String menuItems[numItems] = {"1. Run Test", "2. Calibrate", "3. Sys Info"};  // Array of menu items
 
 void setup() {
   // Initialize the LCD
@@ -34,12 +34,23 @@ void setup() {
   
   // Initialize serial communication for debugging
   Serial.begin(9600);
+
+  lcd.print("Upload complete");
+  delay(500);
   
   // Initial display update
   updateDisplay();
+
+  // Place any program to run directly below
+
 }
 
 void loop() {
+  menu();
+}
+
+
+void menu() {
   static int lastEncoderValue = 0;  // Store the last encoder value
   
   // Check if encoder value has changed
@@ -60,6 +71,8 @@ void loop() {
     delay(300);  // Debounce delay for button press
   }
 }
+
+
 
 // Interrupt Service Routine for encoder
 void handleEncoder() {
@@ -102,10 +115,10 @@ void selectFunction() {
   // Execute the selected function based on menu item
   switch (menuItem) {
     case 0:
-      Calibrate();
+      RunTest();
       break;
     case 1:
-      RunTest();
+      Calibrate();
       break;
     case 2:
       SysInfo();
