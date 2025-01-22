@@ -5,6 +5,7 @@ void RunTest() {
   lcd.setCursor(0,0);
   lcd.print("Testing...");
   lcd.setCursor(0,1);
+  delay(2000);
   breathe_out();    
 }
 
@@ -23,7 +24,7 @@ void breathe_out() {
   float volume_dot1_prev = 0;
   float volume_FEV1 = 0;   // in the first second
   float volume_FVC = 0;    // in the full test
-  float dt_ms = 100;   // milliseconds between sensor values
+  float dt_ms = 0.1;   // milliseconds between sensor values
   int num_data_points = 0;  
 
   Serial.print("Test Parameters---- \n");
@@ -59,13 +60,13 @@ void breathe_out() {
       // add to running total
       volume_FVC = volume_FVC + volume1;
 
-      Serial.print(String(num_data_points) + "\t t (sec): " + String(elapsed_time_s) + "\t Vdot (m3/s): " + String(volume_dot1) + "\t FEV1 (m3): " + String(volume_FEV1) +"\t FVC (m3): " + String(volume_FVC) + "\n");
-
       // only add to first second total if, ya know, it's in the first second
       if (elapsed_time_ms < 1000) {
         volume_FEV1 = volume_FEV1 + volume1;
       }
 
+      // Display to serial
+      Serial.print(String(num_data_points) + "\t t (sec): " + String(elapsed_time_s) + "\t Vdot (m3/s): " + String(volume_dot1) + "\t FEV1 (m3): " + String(volume_FEV1) +"\t FVC (m3): " + String(volume_FVC) + "\n");
     }
 
     // update the countdown
@@ -100,28 +101,6 @@ void displayTime(unsigned long time) {
 }
 
 
-float pretend_sensor(float x) {
-  // pretend to be a sensor, outputing a value using an equation
-  //Serial.print("ERROR - SENSOR NOT BEING READ, EQUATION SUBSTITUTED ");
-  lcd.setCursor(0,0);
-  lcd.print("FAKE SENSOR");
-
-  float y;
-  y = -sq(0.5*x-1) + 10;
-  return y;
-}
-
-
-void read_sensor() {
-  // read raw sensor value, probably a number between 0 - 1600?
-
-  // convert to pascals
-
-  // convert to liters / min
-
-  //TODO!!!
-}
-
 
 float integrate_volume(float volume_dot_prev, float volume_dot, float dt_sec) {
   // trapezoidally integrating using equally spaced panels
@@ -131,9 +110,6 @@ float integrate_volume(float volume_dot_prev, float volume_dot, float dt_sec) {
   this_volume = (0.5*dt_sec)*(volume_dot + volume_dot_prev);
   return this_volume;
 }
-
-
-
 
 
 void display_results(float FEV1, float FVC, int num_data_points) {

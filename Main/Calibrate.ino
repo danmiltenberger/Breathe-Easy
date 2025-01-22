@@ -5,6 +5,6 @@ void Calibrate() {
   lcd.setCursor(0,0);
   lcd.print("Calibrating...");
   lcd.setCursor(0,1);
-  lcd.print("Dan! Code this");
+  lcd.print("placeholder...");
   delay(3000);
 }
