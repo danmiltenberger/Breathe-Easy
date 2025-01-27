@@ -16,8 +16,14 @@ const unsigned long debounceTime = 1; // 1ms debounce time for encoder
 
 // Menu variables
 int menuItem = 0;  // Current selected menu item
-const int numItems = 3;  // Total number of menu items
-String menuItems[numItems] = {"1. Run Test", "2. Calibrate", "3. Sys Info"};  // Array of menu items
+const int numItems = 4;  // Total number of menu items
+String menuItems[numItems] = {"1. Run Test", "2. Calibrate", "3. Sys Info", "4. Sensor Out"};  // Array of menu items
+
+
+// Pressure Sensor setup
+#define sensor_yellow_out 5 
+#define sensor_orange_out 6 
+#define sensor_sck 7 // blue
 
 void setup() {
   // Initialize the LCD
@@ -122,6 +128,9 @@ void selectFunction() {
       break;
     case 2:
       SysInfo();
+      break;
+    case 3:
+      TestSensors();
       break;
   }
   

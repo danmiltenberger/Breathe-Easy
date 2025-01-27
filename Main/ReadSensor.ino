@@ -10,12 +10,57 @@ float pretend_sensor(float x) {
 }
 
 
-void read_sensor() {
-  // read raw sensor value, probably a number between 0 - 1600?
+void TestSensors() {
+  long orange_val;
+  long yellow_val;
+  while (true) {
+      yellow_val = readSensor(sensor_yellow_out, sensor_sck);
+      orange_val = readSensor(sensor_yellow_out, sensor_sck);
 
-  // convert to pascals
+      write_values_LCD(yellow_val, orange_val);
+  }
+}
 
-  // convert to liters / min
 
-  //TODO!!!
+long readSensor(byte output_pin, byte sck_pin) {
+  
+  // wait for the current reading to finish
+  while (digitalRead(output_pin)) {}
+
+  // read 24 bits
+  long result = 0;
+  for (int i = 0; i < 24; i++) {
+
+    // toggle the clock on and off
+    digitalWrite(sck_pin, HIGH);
+    digitalWrite(sck_pin, LOW);
+
+    // read the result
+    result = result << 1;
+    if (digitalRead(output_pin)) {
+      result++;
+    }
+  }
+
+  // get the 2s compliment
+  result = result ^ 0x800000;
+
+  return result;
+}
+
+
+void write_values_LCD(long yellow, long orange) {
+   lcd.clear();
+
+   // value 1
+   lcd.setCursor(0,0);
+   lcd.print("YLW: ");
+   lcd.setCursor(6,0);
+   lcd.print(yellow);
+
+   // value 2
+   lcd.setCursor(0,1);
+   lcd.print("RNG: ");
+   lcd.setCursor(6,1);
+   lcd.print(orange);
 }
