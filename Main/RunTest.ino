@@ -24,7 +24,7 @@ void breathe_out() {
   float volume_dot1_prev = 0;
   float volume_FEV1 = 0;   // in the first second
   float volume_FVC = 0;    // in the full test
-  float dt_ms = 0.1;   // milliseconds between sensor values
+  float dt_ms = 100;   // milliseconds between sensor values
   int num_data_points = 0;  
 
   Serial.print("Test Parameters---- \n");
