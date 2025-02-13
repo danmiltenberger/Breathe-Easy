@@ -301,7 +301,15 @@ void breathe_out(long count_down_duration_ms) {
       }
 
       // Display to serial
-      Serial.print(String(num_data_points) + "\t t (sec): " + String(elapsed_time_s) + "\t Vdot (L/s): " + String(volume_dot_Ls) + "\t FEV1 (L): " + String(volume_L_FEV1) +"\t FVC (L): " + String(volume_L_FVC) + "\n");
+      // Serial.print(String(num_data_points));
+      // Serial.print("\t t (sec): " + String(elapsed_time_s));
+      // Serial.print("\t Vdot (L/s): " + String(volume_dot_Ls));
+      // Serial.print("\t FEV1 (L): " + String(volume_L_FEV1));
+      // Serial.print("\t FVC (L): " + String(volume_L_FVC));
+      // Serial.print("\n");
+
+      // OR display to serial plotter as Casey requested
+      Serial.println(volume_dot_Ls);
     }
 
     // EXIT CONDITIONS
