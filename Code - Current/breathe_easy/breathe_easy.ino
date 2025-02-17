@@ -189,26 +189,71 @@ float get_kpa_dif() {
 
 
 // Evelyn & Bree code goes here!
+// convert the pressure difference to a flow rate
 float get_volume_dot_Ls() {
+  
   // read sensors
-  float kpa_dif = get_kpa_dif();
+  float delta_pascals = get_kpa_dif();
 
-  // convert the pressure difference to a flow rate
-  // Evelyn and Bree are handling this part
+  //Serial.print("Q, L/min: ");
+
+  // determined through lab testing againast ASL 5000
+  float Q_L_min = delta_pascals*1000*0.1938;
+  float volume_dot_Ls = Q_L_min / 60;
+
+  Serial.println(Q_L_min);
 
 
+  return volume_dot_Ls;
+  //Serial.print(",");
+  //Serial.print("Zero: ");
+  //Serial.println(0);
+
+  /*
+  float D = 0.0064;   // tube diam (meters)
+  float mu = 1.8e-5;  // dynamic viscosity, Pascal-seconds
+  float rho = 1.2;    // fluid density (kg per m3)
+  float L = 0.61;     // tube length
+  float Cd = 0.6;     // Discharge coefficient (asumed for orifice plate)
+
+  // Calculate radius and cross-sectional area
+  float R = D/2;
+  float A = PI*pow(R,2);
+
+
+  // Compute flow rate based on flow type
+  float Re_threshold = 2000;            // determine laminar threshold
+
+  // Attempt Hagen-Poiseuille equation first (for laminar flow)
+  float Q = (PI*pow(R,4)*delta_pascals)/(8*mu*L);   // Hagen-Poiseuille eq calculates flow
+  float V = Q/A;                        // resulting velocity
+  float Re = (rho*V*D)/mu;              // determine whether it's laminar or not
+
+  if (Re < Re_threshold) {
+    // flow is laminar
+    float Q_L_per_s = Q*1000;
+    return Q_L_per_s;
+  }
+  else {
+    // Use orifice plate equation for turbulent flow
+    Q = Cd*A*sqrt(2*delta_pascals/rho);        // orifice plate equation
+    V = Q/A;                            // calculate velocity
+    Re = (rho*V*D)/mu;                  // calcuate Re to determine flow type
+    float Q_L_per_s = Q*1000;
+    return Q_L_per_s;
+  }
   // TEMP! FIXME
   // EXAMPLE BELOW from a curve fit from in lab testing
   // https://docs.google.com/spreadsheets/d/1nrHbGkNhTVyMGgrFzzMd0zXJoE00PVxOz64fbbErKuQ/edit?gid=0#gid=0 
   // Curve fitting for flow, volume_dot (L/min)
   // y = a + bx + cx^2
-  float volume_dot_L_min;
-  volume_dot_L_min = flow_a + flow_b*kpa_dif + flow_c*pow(kpa_dif, 2);
+  // float volume_dot_L_min;
+  // volume_dot_L_min = flow_a + flow_b*kpa_dif + flow_c*pow(kpa_dif, 2);
 
-  // convert to Liters / sec for simpler math later
-  float volume_dot_Ls = volume_dot_L_min / 60;
-  return volume_dot_Ls;
-
+  // // convert to Liters / sec for simpler math later
+  // float volume_dot_Ls = volume_dot_L_min / 60;
+  // return volume_dot_Ls;
+  */
 }
 
 
@@ -309,7 +354,7 @@ void breathe_out(long count_down_duration_ms) {
       // Serial.print("\n");
 
       // OR display to serial plotter as Casey requested
-      Serial.println(volume_dot_Ls);
+      //Serial.println(volume_dot_Ls*1000);
     }
 
     // EXIT CONDITIONS
