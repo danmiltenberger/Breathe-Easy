@@ -213,7 +213,7 @@ float get_volume_dot_Ls() {
   float D = 0.0064;   // tube diam (meters)
   float mu = 1.8e-5;  // dynamic viscosity, Pascal-seconds
   float rho = 1.2;    // fluid density (kg per m3)
-  float L = 0.61;     // tube length
+  float L = 0.61;     // tube length m
   float Cd = 0.6;     // Discharge coefficient (asumed for orifice plate)
 
   // Calculate radius and cross-sectional area
