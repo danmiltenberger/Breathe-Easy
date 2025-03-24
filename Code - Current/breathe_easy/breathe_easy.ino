@@ -200,10 +200,10 @@ float get_volume_dot_Ls() {
   //Serial.print("Q, L/min: ");
 
   // determined through lab testing againast ASL 5000
-  float prev_curve_fit = 0.1938 // earlier than 2025-03-24
+  float prev_curve_fit = 0.1938; // earlier than 2025-03-24
 
   // new curve fit
-  float m2 = 0.05;
+  float m2 = 0.0515206;
   float b2 = 4.63*pow(10,-4);
 
   float Q_L_min = delta_pascals*1000*m2 + b2;
