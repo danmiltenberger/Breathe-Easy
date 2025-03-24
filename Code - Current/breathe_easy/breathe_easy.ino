@@ -17,6 +17,8 @@ void breathe_out(long test_duration_ms);
 // Curve fitting for kPa
 // y = mx+b
 // kpa = m*(sensor difference) + b
+
+// old values 2025-03-24 and earlier
 float kpa_m = 1.38E-6;
 float kpa_b = -0.0349;
 
@@ -198,11 +200,16 @@ float get_volume_dot_Ls() {
   //Serial.print("Q, L/min: ");
 
   // determined through lab testing againast ASL 5000
-  float Q_L_min = delta_pascals*1000*0.1938;
+  float prev_curve_fit = 0.1938 // earlier than 2025-03-24
+
+  // new curve fit
+  float m2 = 0.05;
+  float b2 = 4.63*pow(10,-4);
+
+  float Q_L_min = delta_pascals*1000*m2 + b2;
   float volume_dot_Ls = Q_L_min / 60;
 
   Serial.println(Q_L_min);
-
 
   return volume_dot_Ls;
   //Serial.print(",");
