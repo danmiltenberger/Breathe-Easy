@@ -42,7 +42,7 @@ const int pressure_sensor_sck = 7;
 
 
 // LCD configuration
-LCD_I2C lcd(0x27, 16, 2); // I2C address 0x27, 16 columns, 2 rows
+LCD_I2C lcd(0x27, 16, 4); // I2C address 0x27, 16 columns, 4 rows
 
 // Rotary encoder configuration
 Encoder myEncoder(encoder_CLK, encoder_DT);
@@ -106,11 +106,22 @@ void loop() {
 
 
 void displayMenu() {
+  // show the different options plus the selected option
   lcd.clear();
-  lcd.setCursor(0, 0);
+
+  // print the options, from 0 to 3 (aka 1 to 4)
+  for (int i = 0; i <= 3; i++) {
+    lcd.setCursor(0,i);
+    lcd.print(menuItems[i]);  
+  }
+
+  // update the line with a > to show selection
+  lcd.setCursor(0, menuIndex);
   lcd.print("> " + menuItems[menuIndex]);
-  lcd.setCursor(0, 1);
-  lcd.print(menuIndex < numItems - 1 ? menuItems[menuIndex + 1] : "");
+
+  //lcd.print("> " + menuItems[menuIndex]);
+  //lcd.setCursor(0, 1);
+  //lcd.print(menuIndex < numItems - 1 ? menuItems[menuIndex + 1] : "");
 }
 
 
@@ -206,7 +217,7 @@ float get_volume_dot_Ls() {
   float m2 = 0.0515206;
   float b2 = 4.63*pow(10,-4);
 
-  float Q_L_min = delta_pascals*1000*m2 + b2;
+  float Q_L_min = ((delta_pascals*1000*m2)*0.163)*0.863 + b2;
   float volume_dot_Ls = Q_L_min / 60;
 
   Serial.println(Q_L_min);
@@ -417,24 +428,17 @@ void display_results(float FEV1, float FVC, int num_data_points) {
   Serial.print("num data pts: " + String(num_data_points) + "\n");
   
   // LCD results
-  // screen 1
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("FEV1 (L): " + String(FEV1));
-
+  
   lcd.setCursor(0,1);
   lcd.print("FVC  (L): " + String(FVC));
 
-  while (digitalRead(encoder_SW) == HIGH) {
-    // do nothing, wait for button press to go to next screen
-  }
-
-  // screen 2
-  lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0,2);
   lcd.print("FEV1/FVC:   " + String(ratio));
 
-  lcd.setCursor(0,1);
+  lcd.setCursor(0,3);
   lcd.print("num data pts: " + String(num_data_points));
 
   while (digitalRead(encoder_SW) == HIGH) {
