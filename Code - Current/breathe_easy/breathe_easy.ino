@@ -285,10 +285,18 @@ void runTest() {
   lcd.setCursor(0,0);
   lcd.print("Starting Test..");
 
+  //
   delay(500);
+  lcd.setCursor(0,1);
+  lcd.print("3");
+  delay(500);
+  lcd.print("2");
+  delay(500);
+  lcd.print("1");
+  delay(500);  
 
   lcd.setCursor(0,1);
-  delay(2000);
+  //delay(2000);
   breathe_out(count_down_duration_ms);    
 }
 
